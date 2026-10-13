@@ -254,14 +254,14 @@ export default function App() {
           </div>
           <div>
             <div className="brand-title">
-              <span className="text-gradient">AI ATS Resume Tailor</span>
+              <span className="text-gradient">TailorCraft AI</span>
               <span className="brand-badge">
                 <span className="live-pulse-dot" />
                 {apiKey ? `${provider.toUpperCase()} Ready` : 'Stateless BYOK'}
               </span>
             </div>
             <div className="brand-subtitle">
-              Ottimizzazione ATS algoritmica &bull; Formula Google XYZ &bull; Esportazione PDF & DOCX nativa
+              Precision Resume Engineering &bull; Formula Google XYZ &bull; Esportazione PDF & DOCX nativa
             </div>
           </div>
         </div>

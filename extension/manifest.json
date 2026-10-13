@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "ATS CV Tailor - LinkedIn Job Extractor",
+  "name": "TailorCraft AI - LinkedIn Job Extractor",
   "version": "1.0.0",
-  "description": "Extracts LinkedIn Job Descriptions and transfers them directly to your AI ATS CV Tailor workspace.",
+  "description": "Extracts LinkedIn Job Descriptions in 1-click and transfers them directly into your TailorCraft AI workspace.",
   "permissions": [
     "activeTab",
     "scripting",
@@ -15,7 +15,7 @@
     "http://127.0.0.1/*"
   ],
   "action": {
-    "default_title": "Extract Job Description & Open Tailor App",
+    "default_title": "Extract Job Description & Open TailorCraft",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",

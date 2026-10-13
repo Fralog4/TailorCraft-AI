@@ -1,4 +1,7 @@
-# 🚀 AI-Powered ATS Resume Tailor & Job Scraper
+# ⚡ TailorCraft AI — Precision ATS Resume Engineering
+
+> **Engineered for ATS. Crafted for Recruiters.**  
+> Un ecosistema open-source e **100% stateless** per analizzare, ottimizzare e formattare curriculum vitae in formato conforme agli **Applicant Tracking Systems (ATS)** con la Formula Google XYZ, estraendo le offerte di lavoro da LinkedIn con un click tramite estensione Chrome client-side.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
@@ -6,8 +9,6 @@
 [![React](https://img.shields.io/badge/React-18-61DAFB.svg)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-5.0%2B-646CFF.svg)](https://vitejs.dev/)
 [![Chrome Extension](https://img.shields.io/badge/Chrome_Extension-Manifest_V3-green.svg)](https://developer.chrome.com/docs/extensions/)
-
-Un ecosistema open-source e **100% stateless** per analizzare, ottimizzare e formattare curriculum vitae in formato conforme agli **Applicant Tracking Systems (ATS)**, aggirando le restrizioni di scraping di LinkedIn in modo trasparente e legale tramite un'estensione Chrome client-side.
 
 ---
 

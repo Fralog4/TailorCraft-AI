@@ -22,9 +22,9 @@ cors_origins_env = os.getenv("ALLOWED_ORIGINS", "*")
 allowed_origins = [o.strip() for o in cors_origins_env.split(",") if o.strip()]
 
 app = FastAPI(
-    title="AI ATS Resume Tailor API",
-    version="1.1.0",
-    description="Stateless backend for parsing CVs, rewriting them with LLMs for ATS compatibility, calculating ATS scores, and generating single-column PDF and DOCX resumes."
+    title="TailorCraft AI API",
+    version="1.2.0",
+    description="Stateless backend engine for parsing CVs, engineering them with LLMs for ATS compatibility, calculating keyword scores, and generating single-column PDF & DOCX resumes."
 )
 
 # Enable CORS for frontend and Chrome extension
@@ -62,7 +62,7 @@ def validate_uploaded_file(file: UploadFile, file_bytes: bytes) -> None:
 async def health_check():
     return {
         "status": "healthy",
-        "service": "AI ATS Resume Tailor",
+        "service": "TailorCraft AI",
         "features": ["pdf_generation", "docx_export", "ats_scoring", "multi_llm"],
         "supported_providers": ["gemini", "openai", "anthropic", "groq", "openrouter"]
     }
