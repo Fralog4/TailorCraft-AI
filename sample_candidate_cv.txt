@@ -1,0 +1,31 @@
+Marco Rossi
+Milano, Italia | marco.rossi@email.it | +39 340 1234567 | linkedin.com/in/marcorossi-dev | github.com/marcorossi-it
+
+PROFILO PROFESSIONALE
+Ingegnere del Software con 4 anni di esperienza nello sviluppo di applicazioni web full-stack e microservizi cloud in ambienti agili. Forte competenza in Python, FastAPI, Django, TypeScript, React e gestione di database relazionali PostgreSQL.
+
+COMPETENZE TECNICHE
+Linguaggi: Python, TypeScript, JavaScript, SQL, HTML5, CSS3
+Framework & Librerie: FastAPI, Django, React, Next.js, Node.js, Tailwind CSS
+Database & Cloud: PostgreSQL, Redis, Docker, AWS (ECS, S3, RDS), Git, CI/CD GitHub Actions
+Metodologie: Scrum, Agile, Test-Driven Development, RESTful API Design
+
+ESPERIENZA PROFESSIONALE
+
+Software Engineer | FinTech Innovation Lab, Milano
+Marzo 2022 - Presente
+- Sviluppato e ottimizzato microservizi ad alto throughput in Python e FastAPI per la gestione di transazioni finanziarie in tempo reale.
+- Migliorato i tempi di risposta delle query PostgreSQL del 38% mediante indicizzazione avanzata e caching con Redis.
+- Creato dashboard interattive in React e TypeScript per il monitoraggio dei pagamenti, migliorando la produttività operativa del team di supporto.
+- Implementato pipeline di continuous integration e continuous deployment (CI/CD) su AWS ECS, riducendo i tempi di rilascio delle nuove release da 3 giorni a 40 minuti.
+
+Junior Backend Developer | CloudSolutions Srl, Torino
+Settembre 2020 - Febbraio 2022
+- Progettato e mantenuto API REST per clienti enterprise utilizzando Django e PostgreSQL.
+- Scritto oltre 120 test unitari e di integrazione con PyTest, aumentando la copertura del codice dall'55% all'85%.
+- Collaborato a stretto contatto con il team frontend per l'integrazione di componenti React e gestione degli stati.
+
+ISTRUZIONE
+Laurea Triennale in Ingegneria Informatica
+Politecnico di Milano | 2017 - 2020
+Votazione: 108/110
