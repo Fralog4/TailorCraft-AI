@@ -85,7 +85,9 @@ async def tailor_cv_endpoint(
     job_description: str = Form(..., description="Target Job Description text"),
     llm_provider: str = Form("gemini", description="LLM provider name"),
     api_key: str = Form(..., description="User's API Key"),
-    model: Optional[str] = Form(None, description="Optional custom model identifier")
+    model: Optional[str] = Form(None, description="Optional custom model identifier"),
+    language: str = Form("en", description="Target language ('en' or 'it')"),
+    template_style: str = Form("modern", description="Template style ('modern', 'classic', 'executive')")
 ):
     """
     Main endpoint: Parses CV, calls LLM to tailor according to JD,
@@ -110,20 +112,21 @@ async def tailor_cv_endpoint(
         
         raw_cv_text = parse_cv_file(file_bytes, file.filename)
 
-        # Step 2: Call LLM with structured ATS schema
+        # Step 2: Call LLM with structured ATS schema and language
         tailored_cv = await tailor_cv_with_llm(
             cv_raw_text=raw_cv_text,
             job_description=job_description,
             llm_provider=llm_provider,
             api_key=api_key,
-            model_name=model
+            model_name=model,
+            language=language
         )
 
         # Step 3: Compute ATS match score
         ats_analysis = calculate_ats_match(tailored_cv, job_description)
 
         # Step 4: Generate ATS-compliant single-column PDF
-        pdf_buffer = generate_pdf(tailored_cv)
+        pdf_buffer = generate_pdf(tailored_cv, template_style=template_style, language=language)
 
         clean_name = tailored_cv.full_name.replace(' ', '_') if tailored_cv.full_name else "Candidate"
         filename = f"{clean_name}_ATS_Resume.pdf"
@@ -156,7 +159,8 @@ async def tailor_cv_json_endpoint(
     job_description: str = Form(..., description="Target Job Description text"),
     llm_provider: str = Form("gemini", description="LLM provider name"),
     api_key: str = Form(..., description="User's API Key"),
-    model: Optional[str] = Form(None, description="Optional custom model identifier")
+    model: Optional[str] = Form(None, description="Optional custom model identifier"),
+    language: str = Form("en", description="Target language ('en' or 'it')")
 ):
     """
     Returns both the tailored CV structured JSON and the detailed ATS Match Score Analysis.
@@ -183,7 +187,8 @@ async def tailor_cv_json_endpoint(
             job_description=job_description,
             llm_provider=llm_provider,
             api_key=api_key,
-            model_name=model
+            model_name=model,
+            language=language
         )
 
         ats_analysis = calculate_ats_match(tailored_cv, job_description)

@@ -111,12 +111,28 @@ def generate_docx(cv: TailoredCV, template_style: str = "modern", language: str 
     # 3. CORE COMPETENCIES / SKILLS
     if cv.skills:
         add_section_heading(labels["skills"])
-        for skill in cv.skills:
-            p_skill = doc.add_paragraph(style='List Bullet')
-            p_skill.paragraph_format.space_before = Pt(1)
-            p_skill.paragraph_format.space_after = Pt(2)
-            run_sk = p_skill.add_run(skill)
-            run_sk.font.name = font_name
+        skills_table = doc.add_table(rows=0, cols=2)
+        skills_table.autofit = False
+        skills_table.allow_autofit = False
+        for i in range(0, len(cv.skills), 2):
+            row_cells = skills_table.add_row().cells
+            row_cells[0].width = Inches(3.5)
+            row_cells[1].width = Inches(3.5)
+            
+            p0 = row_cells[0].paragraphs[0]
+            p0.paragraph_format.space_before = Pt(1)
+            p0.paragraph_format.space_after = Pt(1.5)
+            r0 = p0.add_run(f"•  {cv.skills[i]}")
+            r0.font.name = font_name
+            r0.font.size = Pt(9.5)
+            
+            if i + 1 < len(cv.skills):
+                p1 = row_cells[1].paragraphs[0]
+                p1.paragraph_format.space_before = Pt(1)
+                p1.paragraph_format.space_after = Pt(1.5)
+                r1 = p1.add_run(f"•  {cv.skills[i+1]}")
+                r1.font.name = font_name
+                r1.font.size = Pt(9.5)
 
     # 4. WORK EXPERIENCE
     if cv.experiences:

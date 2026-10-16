@@ -6,12 +6,12 @@
   <style>
     @page {
       size: letter portrait;
-      margin: 1.4cm;
+      margin: 1.0cm;
     }
     body {
       font-family: {{ style_cfg.font_family | safe }};
-      font-size: 10pt;
-      line-height: 1.35;
+      font-size: 9.5pt;
+      line-height: 1.28;
       color: #111111;
       background-color: #ffffff;
       margin: 0;
@@ -19,77 +19,90 @@
     }
     .header {
       text-align: center;
-      margin-bottom: 12pt;
+      margin-bottom: 8pt;
     }
     h1 {
-      font-size: 18pt;
+      font-size: 16pt;
       font-weight: bold;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin: 0 0 3pt 0;
+      margin: 0 0 2pt 0;
       color: {{ style_cfg.heading_color }};
     }
     .contact {
-      font-size: 9pt;
+      font-size: 8.8pt;
       color: #333333;
       margin: 0;
     }
     h2 {
-      font-size: 11pt;
+      font-size: 10.5pt;
       font-weight: bold;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: {{ style_cfg.heading_color }};
       border-bottom: 1px solid {{ style_cfg.border_color }};
-      padding-bottom: 2pt;
-      margin-top: 10pt;
-      margin-bottom: 5pt;
+      padding-bottom: 1.5pt;
+      margin-top: 7pt;
+      margin-bottom: 3pt;
     }
     p.summary {
-      margin: 3pt 0 6pt 0;
+      margin: 2pt 0 4pt 0;
       text-align: justify;
-      line-height: 1.3;
+      line-height: 1.25;
+      font-size: 9.3pt;
     }
-    .skills-list {
-      margin: 3pt 0 6pt 0;
-      padding-left: 16pt;
+    table.skills-grid {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2pt;
+      margin-bottom: 4pt;
     }
-    .skills-list li {
-      margin-bottom: 2pt;
+    table.skills-grid td {
+      vertical-align: top;
+      padding: 1pt 4pt;
+      font-size: 9.2pt;
+      line-height: 1.25;
+    }
+    .job-block {
+      page-break-inside: avoid;
+      margin-bottom: 4pt;
     }
     .job-header {
-      margin-top: 7pt;
-      margin-bottom: 2pt;
+      margin-top: 4pt;
+      margin-bottom: 1pt;
     }
     .job-title-line {
       font-weight: bold;
-      font-size: 10.5pt;
+      font-size: 10pt;
       color: #000000;
     }
     .job-company-date {
       font-style: italic;
-      font-size: 9.5pt;
+      font-size: 9pt;
       color: #333333;
-      margin-bottom: 2pt;
+      margin-bottom: 1.5pt;
     }
     ul.bullet-list {
-      margin: 2pt 0 6pt 0;
-      padding-left: 16pt;
+      margin: 1.5pt 0 4pt 0;
+      padding-left: 14pt;
     }
     ul.bullet-list li {
-      margin-bottom: 2.5pt;
+      margin-bottom: 2pt;
       text-align: justify;
+      line-height: 1.24;
+      font-size: 9.2pt;
     }
     .education-item {
-      margin-top: 5pt;
-      margin-bottom: 5pt;
+      page-break-inside: avoid;
+      margin-top: 3pt;
+      margin-bottom: 3pt;
     }
     .edu-degree {
       font-weight: bold;
-      font-size: 10pt;
+      font-size: 9.6pt;
     }
     .edu-details {
-      font-size: 9.5pt;
+      font-size: 9pt;
       color: #333333;
     }
   </style>
@@ -108,29 +121,36 @@
   <p class="summary">{{ cv.professional_summary }}</p>
   {% endif %}
 
-  <!-- SKILLS -->
+  <!-- SKILLS (2-Column Grid for Optimal 1-Page Layout) -->
   {% if cv.skills and cv.skills|length > 0 %}
   <h2>{{ labels.skills }}</h2>
-  <ul class="skills-list">
-    {% for skill in cv.skills %}
-    <li>{{ skill }}</li>
-    {% endfor %}
-  </ul>
+  <table class="skills-grid">
+    <tr>
+      {% for skill in cv.skills %}
+        <td style="width: 50%;">&bull; {{ skill }}</td>
+        {% if loop.index % 2 == 0 and not loop.last %}
+          </tr><tr>
+        {% endif %}
+      {% endfor %}
+    </tr>
+  </table>
   {% endif %}
 
   <!-- WORK EXPERIENCE -->
   {% if cv.experiences and cv.experiences|length > 0 %}
   <h2>{{ labels.experience }}</h2>
   {% for exp in cv.experiences %}
-  <div class="job-header">
-    <div class="job-title-line">{{ exp.job_title }}</div>
-    <div class="job-company-date">{{ exp.company }} &bull; {{ exp.start_date }} &ndash; {{ exp.end_date }}</div>
+  <div class="job-block">
+    <div class="job-header">
+      <div class="job-title-line">{{ exp.job_title }}</div>
+      <div class="job-company-date">{{ exp.company }} &bull; {{ exp.start_date }} &ndash; {{ exp.end_date }}</div>
+    </div>
+    <ul class="bullet-list">
+      {% for bullet in exp.bullet_points %}
+      <li>{{ bullet }}</li>
+      {% endfor %}
+    </ul>
   </div>
-  <ul class="bullet-list">
-    {% for bullet in exp.bullet_points %}
-    <li>{{ bullet }}</li>
-    {% endfor %}
-  </ul>
   {% endfor %}
   {% endif %}
 

@@ -37,17 +37,22 @@ async def tailor_cv_with_llm(
     job_description: str,
     llm_provider: str,
     api_key: str,
-    model_name: Optional[str] = None
+    model_name: Optional[str] = None,
+    language: str = "en"
 ) -> TailoredCV:
     """
     Coordinates LLM call according to user's selected provider and API key.
     """
     provider = (llm_provider or "gemini").lower().strip()
+    target_lang_str = "Italian (Italiano)" if language.lower() in ["it", "italian", "italiano"] else "English"
     user_prompt = f"""Target Job Description:
 {job_description}
 
 Original Candidate CV:
 {cv_raw_text}
+
+TARGET LANGUAGE: {target_lang_str.upper()}
+MANDATORY: Write ALL output content (Professional Summary, Experience bullet points, Skills, Job Titles where appropriate, Degree names) completely and fluently in {target_lang_str}.
 
 Transform the CV above to maximize ATS relevance for the job description. Return JSON strictly matching the TailoredCV schema."""
 

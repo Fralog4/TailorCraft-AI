@@ -10,7 +10,9 @@ import {
   CheckCircle,
   ArrowRight,
   ArrowLeft,
-  Check
+  Check,
+  Globe,
+  Type
 } from 'lucide-react';
 
 import BYOKSettings, { PROVIDERS } from './components/BYOKSettings';
@@ -54,8 +56,8 @@ export default function App() {
   const [atsAnalysis, setAtsAnalysis] = useState(null);
 
   // Template Style & Language Customization
-  const [templateStyle, setTemplateStyle] = useState('modern');
-  const [cvLanguage, setCvLanguage] = useState('it');
+  const [templateStyle, setTemplateStyle] = useState(() => localStorage.getItem('ats_template_style') || 'modern');
+  const [cvLanguage, setCvLanguage] = useState(() => localStorage.getItem('ats_cv_language') || 'en');
   const [isRecompiling, setIsRecompiling] = useState(false);
 
   // Persist BYOK to localStorage
@@ -70,6 +72,14 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('ats_model', model);
   }, [model]);
+
+  useEffect(() => {
+    localStorage.setItem('ats_cv_language', cvLanguage);
+  }, [cvLanguage]);
+
+  useEffect(() => {
+    localStorage.setItem('ats_template_style', templateStyle);
+  }, [templateStyle]);
 
   // Clean up object URLs on unmount
   useEffect(() => {
@@ -113,6 +123,7 @@ export default function App() {
       formData.append('llm_provider', provider);
       formData.append('api_key', apiKey);
       if (model) formData.append('model', model);
+      formData.append('language', cvLanguage);
 
       // Call JSON endpoint to get structured CV and ATS analysis
       const jsonRes = await fetch(`${BACKEND_URL}/api/v1/tailor-cv-json`, {
@@ -425,7 +436,79 @@ export default function App() {
 
           {isLoading && <LoadingProgress currentStep={currentStep} />}
 
-          <div style={{ maxWidth: '640px', margin: '8px auto 0', width: '100%' }}>
+          {/* STEP 1 PREFERENCES: LANGUAGE & ATS TEMPLATE STYLE */}
+          <div
+            className="glass-panel"
+            style={{
+              maxWidth: '680px',
+              margin: '0 auto',
+              width: '100%',
+              padding: '14px 20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '16px',
+              flexWrap: 'wrap'
+            }}
+          >
+            {/* Language Selector */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <Globe size={18} color="#38bdf8" />
+              <div>
+                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '5px' }}>
+                  Lingua del CV generato:
+                </div>
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  <button
+                    type="button"
+                    className={`btn ${cvLanguage === 'en' ? 'btn-primary' : 'btn-outline'}`}
+                    style={{ padding: '5px 12px', fontSize: '0.8rem', borderRadius: 'var(--radius-xs)' }}
+                    onClick={() => setCvLanguage('en')}
+                  >
+                    🇬🇧 English
+                  </button>
+                  <button
+                    type="button"
+                    className={`btn ${cvLanguage === 'it' ? 'btn-primary' : 'btn-outline'}`}
+                    style={{ padding: '5px 12px', fontSize: '0.8rem', borderRadius: 'var(--radius-xs)' }}
+                    onClick={() => setCvLanguage('it')}
+                  >
+                    🇮🇹 Italiano
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Template Style Selector */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <Type size={18} color="#94a3b8" />
+              <div>
+                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '5px' }}>
+                  Stile Tipografico:
+                </div>
+                <select
+                  value={templateStyle}
+                  onChange={(e) => setTemplateStyle(e.target.value)}
+                  className="form-control"
+                  style={{
+                    padding: '5px 10px',
+                    fontSize: '0.8rem',
+                    background: '#0a0e17',
+                    borderColor: 'var(--border-subtle)',
+                    borderRadius: 'var(--radius-xs)',
+                    color: '#f8fafc',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value="modern">Modern Tech (Arial)</option>
+                  <option value="classic">Classic Corporate (Georgia)</option>
+                  <option value="executive">Executive Minimal (Calibri)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ maxWidth: '680px', margin: '4px auto 0', width: '100%' }}>
             <button
               type="button"
               className="btn-hero-cta"
