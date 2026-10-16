@@ -18,8 +18,18 @@ from ats_scorer import calculate_ats_match, ATSAnalysis
 MAX_FILE_SIZE = int(os.getenv("MAX_FILE_SIZE_BYTES", str(15 * 1024 * 1024)))  # 15MB limit
 ALLOWED_EXTENSIONS = {".pdf", ".docx", ".doc", ".txt"}
 
-cors_origins_env = os.getenv("ALLOWED_ORIGINS", "*")
-allowed_origins = [o.strip() for o in cors_origins_env.split(",") if o.strip()]
+cors_origins_env = os.getenv("ALLOWED_ORIGINS", "")
+if cors_origins_env:
+    allowed_origins = [o.strip() for o in cors_origins_env.split(",") if o.strip()]
+else:
+    allowed_origins = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:8000",
+        "http://127.0.0.1:8000"
+    ]
 
 app = FastAPI(
     title="TailorCraft AI API",
@@ -31,6 +41,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
+    allow_origin_regex=r"^https?:\/\/(localhost|127\.0\.0\.1)(:[0-9]+)?$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

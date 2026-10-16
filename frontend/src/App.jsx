@@ -162,7 +162,11 @@ export default function App() {
 
     } catch (err) {
       console.error(err);
-      setErrorMessage(err.message || 'An unexpected error occurred during tailoring.');
+      let msg = err.message || 'An unexpected error occurred during tailoring.';
+      if (msg.includes('Failed to fetch') || msg.includes('NetworkError') || msg.includes('ERR_CONNECTION_REFUSED')) {
+        msg = `Impossibile comunicare con il server Backend (${BACKEND_URL}). Assicurati che il backend FastAPI sia in esecuzione (es. apri un terminale nella cartella 'backend' ed esegui 'python -u run_server.py', oppure avvia 'start.bat').`;
+      }
+      setErrorMessage(msg);
     } finally {
       setIsLoading(false);
       setCurrentStep(1);
