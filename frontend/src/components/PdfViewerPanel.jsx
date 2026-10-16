@@ -30,7 +30,9 @@ export default function PdfViewerPanel({
   cvLanguage,
   setCvLanguage,
   onRecompile,
-  isRecompiling
+  isRecompiling,
+  onBoostKeywords,
+  isBoosting
 }) {
   const [activeTab, setActiveTab] = useState('preview'); // 'preview' | 'editor' | 'audit' | 'keywords' | 'json'
 
@@ -222,12 +224,21 @@ export default function PdfViewerPanel({
             </div>
           </div>
         ) : activeTab === 'preview' ? (
-          <div className="pdf-viewer-wrap" style={{ flex: 1, minHeight: '620px' }}>
-            <iframe
-              src={`${pdfBlobUrl}#toolbar=1&navpanes=0`}
-              title="Tailored ATS Resume Preview"
-              style={{ width: '100%', height: '100%', minHeight: '620px', border: 'none' }}
-            />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div className="pdf-viewer-wrap" style={{ flex: 1, minHeight: '620px' }}>
+              <iframe
+                src={`${pdfBlobUrl}#toolbar=1&navpanes=0`}
+                title="Tailored ATS Resume Preview"
+                style={{ width: '100%', height: '100%', minHeight: '620px', border: 'none' }}
+              />
+            </div>
+            {atsAnalysis && (
+              <ATSScoreCard
+                atsAnalysis={atsAnalysis}
+                onBoost={onBoostKeywords}
+                isBoosting={isBoosting}
+              />
+            )}
           </div>
         ) : activeTab === 'editor' ? (
           <CVInlineEditor
@@ -243,7 +254,13 @@ export default function PdfViewerPanel({
           />
         ) : activeTab === 'keywords' ? (
           <div>
-            {atsAnalysis && <ATSScoreCard atsAnalysis={atsAnalysis} />}
+            {atsAnalysis && (
+              <ATSScoreCard
+                atsAnalysis={atsAnalysis}
+                onBoost={onBoostKeywords}
+                isBoosting={isBoosting}
+              />
+            )}
           </div>
         ) : (
           <div

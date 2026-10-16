@@ -47,10 +47,26 @@ export default function FileUploadZone({ file, setFile }) {
     <div className="glass-panel" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <div className="card-header">
         <div className="card-title">
-          <UploadCloud size={18} color="#818cf8" />
+          <div style={{
+            width: '32px',
+            height: '32px',
+            borderRadius: '8px',
+            background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(139, 92, 246, 0.15))',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#a5b4fc',
+            border: '1px solid rgba(99, 102, 241, 0.3)'
+          }}>
+            <UploadCloud size={17} />
+          </div>
           <span>Carica CV Originale</span>
         </div>
-        <span className="badge-tag">PDF &bull; DOCX &bull; TXT</span>
+        <div style={{ display: 'flex', gap: '5px' }}>
+          <span style={{ fontSize: '0.68rem', fontWeight: 700, padding: '2px 7px', borderRadius: '4px', background: 'rgba(239, 68, 68, 0.15)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.3)' }}>PDF</span>
+          <span style={{ fontSize: '0.68rem', fontWeight: 700, padding: '2px 7px', borderRadius: '4px', background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa', border: '1px solid rgba(59, 130, 246, 0.3)' }}>DOCX</span>
+          <span style={{ fontSize: '0.68rem', fontWeight: 700, padding: '2px 7px', borderRadius: '4px', background: 'rgba(6, 182, 212, 0.15)', color: '#22d3ee', border: '1px solid rgba(6, 182, 212, 0.3)' }}>TXT</span>
+        </div>
       </div>
 
       <div className="card-body" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -73,47 +89,65 @@ export default function FileUploadZone({ file, setFile }) {
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
-            style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+            style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}
           >
             <div className="dropzone-icon">
-              <UploadCloud size={26} />
+              <UploadCloud size={28} />
             </div>
-            <h4 style={{ fontSize: '0.98rem', fontWeight: 700, marginBottom: '6px', color: '#f8fafc' }}>
+            <h4 style={{ fontSize: '1.02rem', fontWeight: 700, marginBottom: '6px', color: '#f8fafc' }}>
               Trascina qui il tuo CV oppure clicca
             </h4>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-dim)', marginBottom: '14px' }}>
-              Supporta formati PDF, Word (DOCX) o testo (Max 15MB)
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-dim)', marginBottom: '16px', maxWidth: '300px' }}>
+              Analisi sicura in locale dei formati PDF, DOCX e TXT fino a 15MB
             </p>
-            <div>
-              <span className="btn btn-secondary" style={{ padding: '7px 18px', fontSize: '0.82rem' }}>
-                Sfoglia File dal Computer
-              </span>
-            </div>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              style={{
+                padding: '8px 20px',
+                fontSize: '0.84rem',
+                border: '1px solid rgba(99, 102, 241, 0.3)',
+                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.3)'
+              }}
+            >
+              Sfoglia File dal Computer
+            </button>
           </div>
         ) : (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <div className="file-pill">
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '16px 18px',
+                background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(13, 20, 36, 0.85) 100%)',
+                border: '1px solid rgba(16, 185, 129, 0.35)',
+                borderRadius: 'var(--radius-sm)',
+                boxShadow: '0 8px 25px rgba(0, 0, 0, 0.4), 0 0 20px rgba(16, 185, 129, 0.1)'
+              }}
+            >
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                 <div
                   style={{
-                    width: '42px',
-                    height: '42px',
+                    width: '44px',
+                    height: '44px',
                     borderRadius: '10px',
-                    background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(59, 130, 246, 0.15))',
-                    border: '1px solid rgba(99, 102, 241, 0.35)',
+                    background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(6, 182, 212, 0.15))',
+                    border: '1px solid rgba(16, 185, 129, 0.4)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: '#818cf8'
+                    color: '#34d399'
                   }}
                 >
                   <FileText size={22} />
                 </div>
                 <div>
-                  <div style={{ fontSize: '0.92rem', fontWeight: 600, color: '#f8fafc' }}>
+                  <div style={{ fontSize: '0.94rem', fontWeight: 700, color: '#f8fafc', letterSpacing: '-0.01em' }}>
                     {file.name}
                   </div>
-                  <div style={{ fontSize: '0.78rem', color: '#34d399', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
+                  <div style={{ fontSize: '0.78rem', color: '#34d399', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
                     <Check size={13} />
                     <span>{formatFileSize(file.size)} &bull; Pronto per l'ottimizzazione ATS</span>
                   </div>

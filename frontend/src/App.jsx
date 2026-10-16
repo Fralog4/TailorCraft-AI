@@ -12,7 +12,10 @@ import {
   ArrowLeft,
   Check,
   Globe,
-  Type
+  Type,
+  Target,
+  TrendingUp,
+  Zap
 } from 'lucide-react';
 
 import BYOKSettings, { PROVIDERS } from './components/BYOKSettings';
@@ -29,9 +32,9 @@ export default function App() {
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('ats_api_key') || '');
   const [model, setModel] = useState(() => {
     const saved = localStorage.getItem('ats_model');
-    if (saved) return saved;
+    if (saved && !saved.includes('2.0') && !saved.includes('1.5') && !saved.includes('3.8-pro')) return saved;
     const defaultObj = PROVIDERS.find((p) => p.id === (localStorage.getItem('ats_provider') || 'gemini'));
-    return defaultObj ? defaultObj.defaultModel : 'gemini-2.5-flash';
+    return defaultObj ? defaultObj.defaultModel : 'gemini-3.8-flash';
   });
 
   const [showSettings, setShowSettings] = useState(false);
@@ -259,6 +262,65 @@ export default function App() {
     }
   };
 
+  const [isBoosting, setIsBoosting] = useState(false);
+
+  // AI Keyword Infusion & ATS Score Boost
+  const handleBoostKeywords = async (targetKeywords) => {
+    if (!cvStructuredData || !targetKeywords || targetKeywords.length === 0) return;
+    if (!apiKey) {
+      setShowSettings(true);
+      setErrorMessage('Inserisci la tua API Key nei BYOK Settings per potenziare il CV con l\'AI.');
+      return;
+    }
+
+    setIsBoosting(true);
+    setErrorMessage(null);
+
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/v1/boost-cv-keywords`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cv: cvStructuredData,
+          job_description: jobDescription,
+          target_keywords: targetKeywords,
+          llm_provider: provider,
+          api_key: apiKey,
+          model: model,
+          language: cvLanguage
+        })
+      });
+
+      if (!res.ok) {
+        let errDetail = 'Impossibile potenziare il CV con le keyword selezionate.';
+        try {
+          const errJson = await res.json();
+          errDetail = errJson.detail || errDetail;
+        } catch (e) {}
+        throw new Error(errDetail);
+      }
+
+      const { cv: boostedCv, ats_analysis: boostedAnalysis } = await res.json();
+      setCvStructuredData(boostedCv);
+      setAtsAnalysis(boostedAnalysis);
+
+      // Recompile PDF live with the boosted content
+      await handleRecompile(boostedCv, templateStyle, cvLanguage);
+
+    } catch (err) {
+      console.error('Boost keywords error:', err);
+      let msg = err.message || 'Errore durante l\'integrazione delle keyword.';
+      if (msg.includes('503') || msg.includes('high demand') || msg.includes('UNAVAILABLE')) {
+        msg = `I server Gemini gratuiti di Google stanno riscontrando un picco temporaneo di richieste (503 High Demand). Attendi 5-10 secondi e riprova, oppure seleziona un provider ultra-veloce come Groq (gratuito) o OpenAI nei BYOK Settings in alto.`;
+      } else if (msg.includes('Failed to fetch') || msg.includes('NetworkError')) {
+        msg = `Impossibile comunicare con il server Backend (${BACKEND_URL}). Verifica che il server sia attivo.`;
+      }
+      setErrorMessage(msg);
+    } finally {
+      setIsBoosting(false);
+    }
+  };
+
   return (
     <div className="app-container">
       {/* HEADER */}
@@ -388,6 +450,43 @@ export default function App() {
         </div>
       )}
 
+      {/* HERO BANNER SECTION (Step 1) */}
+      {activeWizardStep === 1 && (
+        <section className="hero-banner">
+          <div className="hero-pill-badge">
+            <Sparkles size={14} color="#c084fc" />
+            <span>AI Resume Engineering Engine • Formula Google XYZ</span>
+          </div>
+
+          <h1 className="hero-title">
+            Il tuo CV ingegnerizzato per <span className="text-glow">superare ogni ATS</span>
+          </h1>
+
+          <p className="hero-subtitle">
+            Ingerisci il tuo curriculum e l'annuncio LinkedIn desiderato. L'AI integrerà le parole chiave mancanti, riformulerà i tuoi traguardi con la formula <em>Accomplished [X] measured by [Y] doing [Z]</em> e genererà un PDF compatto a pagina singola senza allucinazioni.
+          </p>
+
+          <div className="hero-highlights-row">
+            <div className="hero-feature-chip">
+              <TrendingUp size={14} color="#10b981" />
+              <span>92%+ ATS Match Rate</span>
+            </div>
+            <div className="hero-feature-chip">
+              <Zap size={14} color="#38bdf8" />
+              <span>Layout 1-Page Compatto</span>
+            </div>
+            <div className="hero-feature-chip">
+              <Target size={14} color="#a855f7" />
+              <span>Formula Google XYZ Nativa</span>
+            </div>
+            <div className="hero-feature-chip">
+              <ShieldCheck size={14} color="#34d399" />
+              <span>100% Stateless & Privacy</span>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* WIZARD STEPPER NAVIGATION */}
       <div className="wizard-stepper">
         <button
@@ -440,29 +539,43 @@ export default function App() {
           <div
             className="glass-panel"
             style={{
-              maxWidth: '680px',
+              maxWidth: '720px',
               margin: '0 auto',
               width: '100%',
-              padding: '14px 20px',
+              padding: '16px 24px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              gap: '16px',
-              flexWrap: 'wrap'
+              gap: '20px',
+              flexWrap: 'wrap',
+              border: '1px solid rgba(99, 102, 241, 0.25)',
+              background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(20, 27, 45, 0.7))',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
             }}
           >
             {/* Language Selector */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <Globe size={18} color="#38bdf8" />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '8px',
+                backgroundColor: 'rgba(56, 189, 248, 0.12)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '1px solid rgba(56, 189, 248, 0.25)'
+              }}>
+                <Globe size={18} color="#38bdf8" />
+              </div>
               <div>
-                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '5px' }}>
+                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#e2e8f0', marginBottom: '5px' }}>
                   Lingua del CV generato:
                 </div>
                 <div style={{ display: 'flex', gap: '6px' }}>
                   <button
                     type="button"
                     className={`btn ${cvLanguage === 'en' ? 'btn-primary' : 'btn-outline'}`}
-                    style={{ padding: '5px 12px', fontSize: '0.8rem', borderRadius: 'var(--radius-xs)' }}
+                    style={{ padding: '6px 14px', fontSize: '0.82rem', borderRadius: 'var(--radius-xs)' }}
                     onClick={() => setCvLanguage('en')}
                   >
                     🇬🇧 English
@@ -470,7 +583,7 @@ export default function App() {
                   <button
                     type="button"
                     className={`btn ${cvLanguage === 'it' ? 'btn-primary' : 'btn-outline'}`}
-                    style={{ padding: '5px 12px', fontSize: '0.8rem', borderRadius: 'var(--radius-xs)' }}
+                    style={{ padding: '6px 14px', fontSize: '0.82rem', borderRadius: 'var(--radius-xs)' }}
                     onClick={() => setCvLanguage('it')}
                   >
                     🇮🇹 Italiano
@@ -480,27 +593,38 @@ export default function App() {
             </div>
 
             {/* Template Style Selector */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <Type size={18} color="#94a3b8" />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '8px',
+                backgroundColor: 'rgba(168, 85, 247, 0.12)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '1px solid rgba(168, 85, 247, 0.25)'
+              }}>
+                <Type size={18} color="#c084fc" />
+              </div>
               <div>
-                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '5px' }}>
-                  Stile Tipografico:
+                <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#e2e8f0', marginBottom: '5px' }}>
+                  Stile Tipografico ATS:
                 </div>
                 <select
                   value={templateStyle}
                   onChange={(e) => setTemplateStyle(e.target.value)}
                   className="form-control"
                   style={{
-                    padding: '5px 10px',
-                    fontSize: '0.8rem',
-                    background: '#0a0e17',
-                    borderColor: 'var(--border-subtle)',
+                    padding: '6px 12px',
+                    fontSize: '0.84rem',
+                    background: '#090d16',
+                    borderColor: 'rgba(255, 255, 255, 0.15)',
                     borderRadius: 'var(--radius-xs)',
                     color: '#f8fafc',
                     cursor: 'pointer'
                   }}
                 >
-                  <option value="modern">Modern Tech (Arial)</option>
+                  <option value="modern">Modern Tech (Arial ATS Standard)</option>
                   <option value="classic">Classic Corporate (Georgia)</option>
                   <option value="executive">Executive Minimal (Calibri)</option>
                 </select>
@@ -508,7 +632,7 @@ export default function App() {
             </div>
           </div>
 
-          <div style={{ maxWidth: '680px', margin: '4px auto 0', width: '100%' }}>
+          <div style={{ maxWidth: '720px', margin: '4px auto 0', width: '100%' }}>
             <button
               type="button"
               className="btn-hero-cta"
@@ -523,7 +647,7 @@ export default function App() {
               ) : (
                 <>
                   <Sparkles size={20} />
-                  <span>Ottimizza CV per l'Annuncio con Formula XYZ</span>
+                  <span>Ottimizza CV con Formula XYZ & Calcola Score ATS</span>
                   <ArrowRight size={20} />
                 </>
               )}
@@ -571,6 +695,8 @@ export default function App() {
             setCvLanguage={setCvLanguage}
             onRecompile={handleRecompile}
             isRecompiling={isRecompiling}
+            onBoostKeywords={handleBoostKeywords}
+            isBoosting={isBoosting}
           />
         </div>
       )}

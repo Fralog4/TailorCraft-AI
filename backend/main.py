@@ -9,7 +9,7 @@ from fastapi.responses import Response, JSONResponse
 
 from models import TailoredCV, Experience, Education
 from parser import parse_cv_file
-from llm_service import tailor_cv_with_llm
+from llm_service import tailor_cv_with_llm, boost_cv_with_keywords
 from generator import generate_pdf, render_resume_html
 from docx_generator import generate_docx
 from ats_scorer import calculate_ats_match, ATSAnalysis
@@ -203,6 +203,60 @@ async def tailor_cv_json_endpoint(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to generate structured CV: {str(exc)}"
         )
+
+
+class BoostKeywordsRequest(BaseModel):
+    cv: TailoredCV
+    job_description: str
+    target_keywords: list[str]
+    llm_provider: str = "gemini"
+    api_key: str
+    model: Optional[str] = None
+    language: str = "en"
+
+
+@app.post("/api/v1/boost-cv-keywords")
+async def boost_cv_keywords_endpoint(payload: BoostKeywordsRequest):
+    """
+    Takes the current CV and an explicit list of missing target keywords,
+    calls the LLM to weave them in using Google's XYZ formula, and re-calculates the ATS score.
+    """
+    if not payload.api_key.strip():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="API Key is required to boost the CV."
+        )
+
+    if not payload.target_keywords:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="At least one target keyword must be provided."
+        )
+
+    try:
+        boosted_cv = await boost_cv_with_keywords(
+            current_cv=payload.cv,
+            job_description=payload.job_description,
+            target_keywords=payload.target_keywords,
+            llm_provider=payload.llm_provider,
+            api_key=payload.api_key,
+            model_name=payload.model,
+            language=payload.language
+        )
+
+        ats_analysis = calculate_ats_match(boosted_cv, payload.job_description)
+
+        return JSONResponse(content={
+            "cv": boosted_cv.model_dump(),
+            "ats_analysis": ats_analysis.model_dump()
+        })
+    except Exception as exc:
+        traceback.print_exc()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to boost CV with keywords: {str(exc)}"
+        )
+
 
 
 @app.post("/api/v1/compile-json-to-pdf")

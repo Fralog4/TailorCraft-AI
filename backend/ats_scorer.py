@@ -19,6 +19,9 @@ STOP_WORDS = {
     "requirements", "seeking", "looking", "plus", "ability", "strong", "skills",
     "team", "company", "position", "preferred", "minimum", "qualifications",
     "including", "ensure", "working", "related", "equivalent", "opportunity",
+    "who", "what", "where", "join", "joining", "mid-level", "senior-level", "entry-level",
+    "contribute", "contributing", "enhancing", "enhance", "help", "helping", "seeking", "welcome",
+    "apply", "applying", "application", "equal", "employer", "diversity", "inclusion",
     # Italian stop words & common boilerplate
     "di", "a", "da", "in", "con", "su", "per", "tra", "fra", "il", "lo", "la",
     "i", "gli", "le", "un", "uno", "una", "e", "ed", "o", "od", "ma", "anche",
@@ -26,12 +29,15 @@ STOP_WORDS = {
     "della", "dei", "degli", "delle", "al", "allo", "alla", "ai", "agli", "alle",
     "dal", "dallo", "dalla", "dai", "dagli", "dalle", "nel", "nello", "nella",
     "nei", "negli", "nelle", "sul", "sullo", "sulla", "sui", "sugli", "sulle",
+    "sull", "informazioni", "descrizione", "mostra", "visualizza", "altro", "meno",
+    "segnala", "quest", "vorresti", "lavorare", "futuro", "premesso", "seguente",
+    "ambiti", "candidatura", "candidarsi", "posizione", "figure", "figura", "scopri", "unisciti",
     "anni", "anno", "esperienza", "esperienze", "requisiti", "requisito",
     "candidato", "candidata", "candidati", "azienda", "ruolo", "lavoro",
     "offerta", "competenze", "competenza", "capacità", "conoscenza", "conoscenze",
     "attività", "gestione", "sviluppo", "sviluppatore", "sviluppatrice", "progetto",
     "progetti", "gruppo", "società", "settore", "sede", "richiesta", "richiesto",
-    "richiesti", "richieste", "mansione", "mansioni", "profilo", "figura",
+    "richiesti", "richieste", "mansione", "mansioni", "profilo",
     "inserimento", "contratto", "tempo", "indeterminato", "determinato", "full-time",
     "part-time", "remoto", "ibrido", "smart-working", "laurea", "diploma", "titolo",
     "studi", "ottima", "buona", "livello", "autonomia", "collaborazione", "clienti",
@@ -40,10 +46,10 @@ STOP_WORDS = {
     "principali", "orientamento", "risultati", "risorse", "ambiente",
     "title", "company", "junior", "senior", "jr", "sr", "ad", "ed", "al", "ai",
     "agli", "alle", "lavorerai", "svilupperai", "seguire", "utilizzate", "utilizzati",
-    "contatto", "diretto", "supporto", "esplorerai", "utilizzo", "soluzioni",
-    "efficienza", "cerchiamo", "background", "formativo", "stem", "buona",
+    "contatto", "diretto", "esplorerai", "utilizzo", "soluzioni",
+    "efficienza", "background", "formativo", "stem",
     "paradigmi", "applicazioni", "utenti", "business", "forte", "potenziale",
-    "capacita", "capacità", "imparare", "crescere", "contesto", "sfide"
+    "capacita", "imparare", "crescere", "contesto", "sfide"
 }
 
 # Key multi-word compound technical phrases
